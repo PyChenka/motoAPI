@@ -1,10 +1,15 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from .models import Bike
-from .serializers import BikeSerializer
+from .models import Bike, Owner
+from .serializers import BikeSerializer, OwnerSerializer
 
 
-class MotorcycleViewSet(viewsets.ModelViewSet):
+class BikeViewSet(viewsets.ModelViewSet):
     queryset = Bike.objects.all()
     serializer_class = BikeSerializer
+
+
+class OwnerViewSet(viewsets.ModelViewSet):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
