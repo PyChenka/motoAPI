@@ -1,3 +1,6 @@
+import datetime
+import webcolors
+
 from rest_framework import serializers
 
 from .models import Bike, Owner, Ownership
@@ -11,13 +14,31 @@ class OwnerSerializer(serializers.ModelSerializer):
         fields = ('name', 'surname', 'current_bikes', 'previous_bikes', )
 
 
+class Hex2NameColor(serializers.Field):
+    """Кастомный тип поля для сериализатора BikeSerializer"""
+
+    def to_representation(self, value):
+        """При чтении отображает название цвета как есть"""
+        return value
+
+    def to_internal_value(self, data):
+        """При записи конверитирует код цвета в название"""
+        try:
+            data = webcolors.hex_to_name(data)
+        except ValueError:
+            raise serializers.ValidationError('Для этого цвета нет имени.')
+        return data
+
+
 class BikeSerializer(serializers.ModelSerializer):
-    # current_owner = serializers.StringRelatedField(read_only=True)
+    nickname = serializers.CharField(source='name')
     previous_owners = OwnerSerializer(many=True, required=False)
+    age = serializers.SerializerMethodField()
+    color = Hex2NameColor()
 
     class Meta:
         model = Bike
-        fields = ('name', 'brand', 'model', 'color', 'made_year', 'current_owner', 'previous_owners',)
+        fields = ('nickname', 'brand', 'model', 'color', 'made_year', 'age', 'current_owner', 'previous_owners',)
 
     def create(self, validated_data):
         if 'previous_owners' not in self.initial_data:
@@ -47,3 +68,6 @@ class BikeSerializer(serializers.ModelSerializer):
                 own, status = Owner.objects.get_or_create(**owner)
                 Ownership.objects.create(owner=own, bike=instance)
             return instance
+
+    def get_age(self, obj):
+        return datetime.datetime.now().year - obj.made_year

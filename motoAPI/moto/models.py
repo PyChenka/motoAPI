@@ -23,8 +23,8 @@ class Owner(models.Model):
 
 
 class Ownership(models.Model):
-    owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
-    bike = models.ForeignKey(Bike, on_delete=models.PROTECT)
+    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     date_purchase = models.DateField(null=True)
     date_sale = models.DateField(null=True)
 
