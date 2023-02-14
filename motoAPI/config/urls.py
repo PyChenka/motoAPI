@@ -9,6 +9,6 @@ router.register('bike', BikeViewSet)
 router.register('owner', OwnerViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/v1/', include(router.urls)),
     path('admin/', admin.site.urls),
 ]
