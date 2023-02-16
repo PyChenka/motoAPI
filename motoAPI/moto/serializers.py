@@ -1,8 +1,8 @@
-import datetime
 import webcolors
 
 from rest_framework import serializers
 
+from .mixins import MethodFieldMixin
 from .models import Bike, Owner, Ownership
 
 
@@ -31,15 +31,6 @@ class Hex2NameColor(serializers.Field):
         except ValueError:
             raise serializers.ValidationError('Для этого цвета нет имени.')
         return data
-
-
-class MethodFieldMixin:
-
-    @staticmethod
-    def get_age(obj):
-        """Для MethodField: вычисляет значение для поля age"""
-
-        return datetime.datetime.now().year - obj.made_year
 
 
 class BikeChangeSerializer(serializers.ModelSerializer, MethodFieldMixin):

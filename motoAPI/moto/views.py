@@ -1,11 +1,16 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import *
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.viewsets import GenericViewSet
 
 from .custom_viewset import CustomUpdateModelMixin
 from .models import Bike, Owner
+from .pagination import CustomPagination
 from .permissions import IsSuperuserPermission
 from .serializers import BikeChangeSerializer, OwnerSerializer, BikeListSerializer, BikeDetailSerializer
+from .throttling import NightThrottle
 
 
 class BikeViewSet(CreateModelMixin,
@@ -16,6 +21,13 @@ class BikeViewSet(CreateModelMixin,
                   GenericViewSet):
 
     queryset = Bike.objects.all()
+    throttle_classes = [UserRateThrottle, AnonRateThrottle, NightThrottle, ]
+    # throttle_scope = 'low_request'
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['brand', ]
+    search_fields = ['model', ]
+    ordering_fields = ['made_year', ]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -41,6 +53,8 @@ class OwnerViewSet(RetrieveModelMixin,
 
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
+    throttle_classes = [UserRateThrottle, NightThrottle]
+    # throttle_scope = 'low_request'
 
     def get_permissions(self):
         if self.action == 'destroy':
