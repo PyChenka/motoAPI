@@ -34,7 +34,9 @@ class Hex2NameColor(serializers.Field):
 
 
 class MethodFieldMixin:
-    def get_age(self, obj):
+
+    @staticmethod
+    def get_age(obj):
         """Для MethodField: вычисляет значение для поля age"""
 
         return datetime.datetime.now().year - obj.made_year
@@ -73,7 +75,8 @@ class BikeChangeSerializer(serializers.ModelSerializer, MethodFieldMixin):
                 Ownership.objects.get_or_create(owner=own, bike=bike)
             return instance
 
-    def create_bike_and_current_owner(self, data) -> Bike:
+    @staticmethod
+    def create_bike_and_current_owner(data) -> Bike:
         """Создает owner'а, если его нет, и создает bike с этим owner'ом"""
 
         current_owner = data.pop('current_owner')
@@ -82,7 +85,8 @@ class BikeChangeSerializer(serializers.ModelSerializer, MethodFieldMixin):
         bike = Bike.objects.create(**data)
         return bike
 
-    def update_bike_with_current_owner_create(self, instance, data) -> Bike:
+    @staticmethod
+    def update_bike_with_current_owner_create(instance, data) -> Bike:
         """Создает owner'а, если его нет, и обновляет bike"""
 
         current_owner = data.pop('current_owner')
@@ -104,7 +108,8 @@ class OwnerRelatedSerializer(serializers.ModelSerializer):
         model = Owner
         fields = ('full_name', )
 
-    def get_full_name(self, obj):
+    @staticmethod
+    def get_full_name(obj):
         """Для MethodField: слепляет полное имя для поля full_name"""
 
         return f'{obj.name} {obj.surname}'
