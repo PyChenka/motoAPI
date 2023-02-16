@@ -24,7 +24,7 @@ class Hex2NameColor(serializers.Field):
         return value
 
     def to_internal_value(self, data):
-        """При записи конверитирует код цвета в название"""
+        """При записи конвертирует код цвета в название"""
 
         try:
             data = webcolors.hex_to_name(data)
@@ -105,7 +105,7 @@ class OwnerRelatedSerializer(serializers.ModelSerializer):
         fields = ('full_name', )
 
     def get_full_name(self, obj):
-        """Для MethodFiel: слепляет полное имя для поля full_name"""
+        """Для MethodField: слепляет полное имя для поля full_name"""
 
         return f'{obj.name} {obj.surname}'
 
