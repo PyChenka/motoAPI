@@ -9,7 +9,7 @@ from .custom_viewset import CustomUpdateModelMixin
 from .models import Bike, Owner
 from .pagination import CustomPagination
 from .permissions import IsSuperuserPermission
-from .serializers import BikeChangeSerializer, OwnerSerializer, BikeListSerializer, BikeDetailSerializer
+from .serializers import BikeChangeSerializer, OwnerSerializer, BikeDetailSerializer
 from .throttling import NightThrottle
 
 
@@ -30,9 +30,7 @@ class BikeViewSet(CreateModelMixin,
     ordering_fields = ['made_year', ]
 
     def get_serializer_class(self):
-        if self.action == 'list':
-            return BikeListSerializer
-        elif self.action == 'retrieve':
+        if self.action in ('list', 'retrieve'):
             return BikeDetailSerializer
         return BikeChangeSerializer
 

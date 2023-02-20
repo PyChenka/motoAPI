@@ -5,8 +5,8 @@ from rest_framework.routers import DefaultRouter
 from moto.views import BikeViewSet, OwnerViewSet
 
 router = DefaultRouter()
-router.register('bike', BikeViewSet)
-router.register('owner', OwnerViewSet)
+router.register('bikes', BikeViewSet)
+router.register('owners', OwnerViewSet)
 
 urlpatterns = [
     path('auth/', include('djoser.urls')),

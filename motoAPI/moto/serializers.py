@@ -15,6 +15,20 @@ class OwnerSerializer(serializers.ModelSerializer):
         fields = ('name', 'surname', 'current_bikes', 'previous_bikes', )
 
 
+class OwnerRelatedSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Owner
+        fields = ('full_name', )
+
+    @staticmethod
+    def get_full_name(obj):
+        """Для MethodField: слепляет полное имя для поля full_name"""
+
+        return f'{obj.name} {obj.surname}'
+
+
 class Hex2NameColor(serializers.Field):
     """Кастомный тип поля для сериализатора BikeSerializer"""
 
@@ -92,37 +106,12 @@ class BikeChangeSerializer(serializers.ModelSerializer, MethodFieldMixin):
         return instance
 
 
-class OwnerRelatedSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Owner
-        fields = ('full_name', )
-
-    @staticmethod
-    def get_full_name(obj):
-        """Для MethodField: слепляет полное имя для поля full_name"""
-
-        return f'{obj.name} {obj.surname}'
-
-
-class BikeListSerializer(serializers.ModelSerializer, MethodFieldMixin):
-    nickname = serializers.CharField(source='name')
-    color = Hex2NameColor()
-    current_owner = OwnerRelatedSerializer()
-    age = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bike
-        fields = ('nickname', 'brand', 'model', 'color', 'made_year', 'age', 'current_owner', )
-
-
 class BikeDetailSerializer(serializers.ModelSerializer, MethodFieldMixin):
     nickname = serializers.CharField(source='name')
-    current_owner = OwnerRelatedSerializer()
-    previous_owners = OwnerRelatedSerializer(many=True)
     color = Hex2NameColor()
     age = serializers.SerializerMethodField()
+    current_owner = OwnerRelatedSerializer()
+    previous_owners = OwnerRelatedSerializer(many=True)
 
     class Meta:
         model = Bike
