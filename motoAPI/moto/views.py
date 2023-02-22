@@ -52,6 +52,7 @@ class OwnerViewSet(RetrieveModelMixin,
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
     throttle_classes = [UserRateThrottle, NightThrottle]
+    pagination_class = CustomPagination
     # throttle_scope = 'low_request'
 
     def get_permissions(self):

@@ -1,0 +1,396 @@
+openapi: 3.0.3
+info:
+  title: База мотоциклов - OpenAPI 3.0
+  description: База данных мотоциклов для мотосервиса
+  version: 0.0.1
+servers:
+  - url: http://localhost:8000/api/v1/
+    description: Dev server
+paths:
+  /bikes/:
+    get:
+      summary: Метод получения списка мотоциклов
+      tags:
+        - Bikes
+      operationId: getAllBikes
+      parameters: 
+        - name: page
+          in: query
+          required: false
+          description: Номер страницы
+          schema:
+            type: integer
+        - name: brand
+          in: query
+          required: False
+          description: Фильтрация по марке мотоцикла
+          schema:
+            type: string
+            example: YAMAHA
+        - name: search
+          in: query
+          required: false
+          description: Поиск по модели мотоцикла
+          schema:
+            type: string
+            example: XV750
+      responses:
+        '200':
+          description: Успешный ответ со списком мотоциклов с пагинацией
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResult"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BikeLite"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      security:
+        - bearerAuth: []  
+      summary: Метод создания мотоцикла
+      tags:
+        - Bikes
+      operationId: createBike
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BikeChange"
+      responses:
+        '201':
+          description: Успешный ответ с созданным мотоциклом
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BikeFull"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"            
+  /bikes/{id}/:
+    get:
+      security:
+        - bearerAuth: []    
+      summary: Метод получения одного мотоцикла по id
+      tags:
+        - Bikes
+      operationId: getBikeById
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор мотоцикла
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ с одним мотоциклом
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BikeLite"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      security:
+        - bearerAuth: []    
+      summary: Метод обновления мотоцикла по id
+      tags:
+        - Bikes
+      operationId: updateBikeById
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор мотоцикла
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BikeChange"            
+      responses:
+        '200':
+          description: Успешный ответ с обновленным мотоциклом
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BikeFull"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"          
+    delete:
+      security:
+        - bearerAuth: []    
+      summary: Метод удаления мотоцикла по id
+      tags:
+        - Bikes
+      operationId: deleteBikeById
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор мотоцикла
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Успешное удаление мотоцикла
+          content: {}
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"       
+  /owners/:
+    get:
+      security:
+        - bearerAuth: []    
+      summary: Метод получения списка владельцев
+      tags:
+        - Owners
+      operationId: getAllOwners
+      parameters: 
+        - name: page
+          in: query
+          description: Номер страницы
+          schema:
+            type: integer      
+      responses:
+        '200':
+          description: Успешный ответ со списком владельцев с пагинацией
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResult"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/OwnerFull"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"    
+  /owners/{id}/:
+    get:
+      security:
+        - bearerAuth: []    
+      summary: Метод получения одного владельца по id
+      tags:
+        - Owners
+      operationId: getOwnerById
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор владельца
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ с одним владельцем
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnerFull"
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"     
+    delete:
+      security:
+        - bearerAuth: []    
+      summary: Метод удаления владельца по id
+      tags:
+        - Owners
+      operationId: deleteOwnerById
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор владельца
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Успешное удаление владельца
+          content: {}
+        'default':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"                  
+components:
+  schemas:
+    BikeCommon:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Прозвище
+          example: Виражка
+        brand:
+          type: string
+          description: Марка
+          example: YAMAHA
+        model:
+          type: string
+          description: Модель
+          example: XV750
+        color:
+          type: string
+          description: 'Цвет <br>
+          Для PUT, CREATE - hex-код, пример: /#800000'
+          example: wine
+        made_year:
+          type: integer
+          description: Год выпуска
+          example: 1995
+      required: 
+        - nickname
+        - brand
+        - model
+        - color
+        - made_year          
+    BikeFull:
+      allOf:
+        - $ref: "#/components/schemas/BikeCommon"    
+        - type: object
+          properties:
+            age:
+              type: object
+              example: 28
+            current_owner:
+              $ref: "#/components/schemas/OwnerFull"
+            previous_owners:
+              items:
+                $ref: "#/components/schemas/OwnerFull"
+          required:
+            - age
+            - current_owner                
+    BikeLite:
+      allOf:
+        - $ref: "#/components/schemas/BikeCommon"    
+        - type: object
+          properties:
+            age:
+              type: integer
+              example: 28
+            current_owner:
+              $ref: "#/components/schemas/OwnerLite"
+            previous_owners:
+              type: array
+              items:
+                $ref: "#/components/schemas/OwnerLite"
+    BikeChange:
+      allOf:
+        - $ref: "#/components/schemas/BikeCommon"    
+        - type: object
+          properties:
+            current_owner:
+              $ref: "#/components/schemas/Owner"
+            previous_owners:
+              type: array
+              items:
+                $ref: "#/components/schemas/Owner"
+          required:
+            - current_owner                
+    Owner:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Наталья
+        surname:
+          type: string
+          example: Lis
+      required:
+        - name
+        - surname          
+    OwnerFull:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Owner"
+        - type: object
+          properties:
+            current_bikes:
+              type: array
+              items:
+                type: string
+                example: Хася
+            previous_bikes:
+              type: array
+              items:
+                type: string
+                example: Хася Младшая
+    OwnerLite:
+      type: object
+      properties:
+        full_name:
+          type: string
+          example: Наталья Lis
+      required:
+        - full_name          
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: Invalid page.
+    PaginatedResult:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 7
+        next:
+          type: string
+          format: url
+          example: http://127.0.0.1:8000/api/v1/bikes/?page=2
+        previous:
+          type: string
+          format: url
+          example: http://127.0.0.1:8000/api/v1/bikes/
+        response:
+          type: array
+          items: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Авторизация по JWT. <br>
+      Все запросы должны выполняться с заголовком "Authorization: Bearer "access token"'            
+          
+          
