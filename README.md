@@ -46,7 +46,7 @@ JWT (Djoser, SimpleJWT)
 
 ## Запросы
 
-###/api/v1/bikes/
+### /api/v1/bikes/
 
 GET - список мото с пагинацией
 
@@ -72,7 +72,7 @@ POST - создание мото (+ создание владельца), 'previ
   ]
 }
 ```
-###/api/v1/bikes/id
+### /api/v1/bikes/id
 
 GET - один мот
 
@@ -102,11 +102,11 @@ PATCH - метод запрещен
 
 DELETE - удаление мото
 
-###/api/v1/owners/
+### /api/v1/owners/
 
 GET - список владельцев
 
-###/api/v1/owners/id
+### /api/v1/owners/id
 
 GET - один владелец
 
